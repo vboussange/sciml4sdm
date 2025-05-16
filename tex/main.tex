@@ -1,0 +1,91 @@
+\begin{abstract}
+
+
+{\footnotesize
+
+Accurate forecasting of biodiversity responses to environmental changes is critical for designing effective conservation strategies, but current state-of-the-art deep learning approaches cannot extrapolate because they do not incorporate fundamental ecological processes. This oversight is problematic because these processes are crucial in determining biodiversity’s response to environmental changes. Species occurrence data from citizen science provides unique insights into these transient responses, but require innovative methods for their effective utilization in models. Building models based on ecological first principles could be envisioned through scientific machine learning approaches. These methods allow assembling interpretable data-driven components by fusing domain knowledge and ML.
+This review seeks to highlight the potential of scientific machine learning to improve species distribution models with the aim of providing more reliable forecasts of species range shifts and transient responses to global change. 
+
+\noindent \textbf{Key words.} scientific machine learning, deep species distribution models
+}
+
+\section{Introduction}
+
+\noindent\textbf{Motivation.}
+The current biodiversity crisis poses significant threats to humanity by negatively impacting ecosystem services \cite{Barnosky2011,ipbes2019}. Climate change and habitat degradations are major drivers of biodiversity loss, influencing species abundance, community composition, and spatial distribution \cite{ipbes2019, pereira2010}. Some species adapt to climate change by shifting their geographic range to track suitable environmental conditions \cite{bellard2012} when sufficient habitat connectivity supports colonization and survival \cite{hodgson2016}. However, anthropogenic pressures and land-use changes often result in habitat fragmentation, impeding species' ability to track environmental shifts effectively \cite{mcguire2016}. Realistic biodiversity forecasts are essential for guiding conservation actions that promote ecosystem resilience \cite{urban2015}. 
+
+\noindent\textbf{What is species distribution modelling?}
+Biodiversity forecasts typically rely on species distribution models (SDMs) that assume species are in equilibrium with their environment \cite{guisan2000}. These models typically overlook dynamical processes determining species’ range shifts and responses to environmental change, such as dispersal and demographic changes \cite{svenning2013}. Alternative models explicitly representing these processes, known as process-based models, are entailed with large inaccuracies, leading to imprecise forecasts in practice. Consequently, there is an urgent need to incorporate data-driven ecological dynamics into biodiversity models \cite{urban2015}. 
+
+\noindent\textbf{What are current challenges?}
+\begin{itemize}
+    \item Predicting species interactions
+    \item Predicting species responses to climate change
+    \item Interpretability of deep SDM
+\end{itemize}
+
+\noindent\textbf{What is scientific machine learning?}
+Scientific machine learning** (SciML) is an emerging discipline within the data science community.  SciML seeks to address domain-specic data challenges and extract insights from scientific data sets through innovative methodological solutions \cite{rackauckas2020}. SciML draws on tools from both machine learning and scientific computing to develop new methods for scalable, domain-aware, robust, reliable, and interpretable learning and data analysis, and will be critical in driving the next wave of data-driven scientific discovery in the physical and engineering sciences. 
+
+\noindent\textbf{What is the goal of this paper?} 
+
+\section{Literature review on start-of-the-art species distribution models}
+
+\subsection{Data-driven species distribution models}
+\noindent\textbf{Classical SDMs}
+
+\noindent\textbf{Joint SDMs}
+
+\noindent\textbf{Deep SDMs}
+
+Recent advances in machine learning, particularly deep learning, have enabled improvements in biodiversity forecasts through the development of deep learning-based SDMs (deep SDMs). These models can leverage large-scale opportunistic datasets, high-resolution satellite imagery, and species interaction data to enhance predictive performance \cite{brun2024, cole2023, Deneu2021, zbinden2024on}. 
+By leveraging citizen science and remote sensing, which provide critical information at fine temporal scales, deep SDMs have also been used to predict ecological community dynamics \cite{gillespie2024,dollinger2024}.
+% 
+Yet these temporally resolved forecast based on deep SDM still suffer from the same limitations as those from traditional SDMs: they assume species are in equilibrium with their environments, neglecting transient dynamics. The models implicitly treat changes as instantaneous, which overlooks important ecological processes such as population growth, dispersal, and delayed responses to environmental changes \cite{isaac2014, zurell}. This equilibrium assumption fails to capture the time-lagged nature of species range shifts and their transient responses to disturbances \cite{barber-omalley2022}.
+
+\subsection{Process-based species distribution models}
+Process-based models, particularly reaction-diffusion models, are dynamical models that explicitly represent demographic processes and dispersal \cite{cantrell2004, bonneau2016}. These models embed strong ecological priors, which theoretically make them more data-efficient and capable of extrapolating beyond observed data \cite{cabral2017, briscoe2019}. However, process-based models are often difficult to calibrate and are entailed with inaccuracies in the representation of dynamical processes, leading to imprecise forecasts in practice \cite{evans2016a, connolly2017, Scheiter2013, boussange2024}.
+
+
+\section{Existing scientific machine learning approaches in related fields}
+
+\subsection{Hard constraints}
+By-design
+\begin{itemize}
+    \item Universal differential equations, data-driven parametrization of differential equation-based models
+\end{itemize}
+
+\subsection{Soft constraints}
+Penalizing downstream the data-driven model for violating constraints.
+
+"Physics-informed neural networks" (PINNs) are collocation methods relying on a neural network trained to predict an empirical dataset while respecting additional constraints provided by a process-based model \cite{Raissi2019, Kashinath2021,daw2021,bezenac2018}. PINNs and related paradigms, more generally coined "scientific machine learning" \cite{Rackauckas2020}, improve model generalization and data efficiency \cite{Raissi2019, Rackauckas2020}, and have been successfully applied to a variety of system with complex spatio-temporal dynamics, such as climate and weather predictions \cite{Kashinath2021, lam2023, kochkov2024}. PINNs have been extended successfully in the domain of systems biology \cite{lagergren2020, Yazdani2020}, where in contrast to the climate and weather field, process-based models are inaccurate. Despite these successes, scientific machine learning is only starting to be used in the context of biodiversity modeling \cite{boussange2024}. 
+
+
+\section{Opportunities for scientific machine learning in species distribution modelling}
+
+
+\noindent\textbf{Existing knowledge}
+\begin{itemize}
+    \item Traits
+    \item Phylogeny
+    \item Physiological constraint
+    \item Food webs / interactions
+    \item Dispersal
+    \item Historical contingency
+\end{itemize}
+
+\noindent\textbf{Retrieval augmented generation.} LLMs + check by experts
+
+
+\section{Robust evaluation under distribution shifts}
+
+\begin{itemize}
+    \item With synthetic data
+    \item Space for time data
+    \item Invasive species
+\end{itemize}
+
+
+\section{Conclusion}
+
+\end{abstract}

@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Customized packages %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{mystyle}
+\usepackage{contributors}
+\usepackage{mymath}
+\usepackage{jlcode}
+
+\titleformat{\paragraph}
+{\normalfont\small\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\addbibresource{bibs/bibliography-victor.bib}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%% Document %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{A blueprint on scientific machine learning for modelling species distributions}
+
+\date{}
+% \date{\today}
+
+\begin{document}
+\maketitle
+
+\input{main}
+
+
+\newpage
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}
