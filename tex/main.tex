@@ -1,24 +1,24 @@
 \begin{abstract}
-
-
 {\footnotesize
+Ecological data is increasingly abundant and of improved spatial and temporal resolution, thanks to advances in sensing technologies and data collection methods. While current state-of-the-art deep learning approaches can leverage this data to estimate species distributions, they suffer from poor extrapolation capabilities to novel environmental conditions. This limitation is problematic because accurate biodiversity forecasts under environmental change are essential for effective conservation planning. 
+% 
+Alternative process-based models, which incorporate ecological mechanisms by design, theoretically offer better extrapolation potential but struggle with data assimilation and often yield imprecise predictions in practice. 
+% 
+Scientific machine learning (SciML) approaches, which integrate domain knowledge with machine learning methods, present a promising pathway to bridge this gap between data-driven and process-based modeling paradigms.
+% 
+This review examines the potential of scientific machine learning to enhance biodiversity forecasting under global change. We (i) propose a working definition of SciML in the ecological context, (ii) survey existing SciML methodologies from related scientific domains, (iii) identify ecological knowledge and modeling frameworks suitable for SciML implementation, and (iv) outline future research directions for the field.
+% 
+Our goal is to stimulate the development of more robust and interpretable species distribution models that can better support conservation decision-making in an era of rapid environmental change.
+\vspace{1cm}
 
-Accurate forecasting of biodiversity responses to environmental changes is critical for designing effective conservation strategies, but current state-of-the-art deep learning approaches cannot extrapolate because they do not incorporate fundamental ecological processes. This oversight is problematic because these processes are crucial in determining biodiversity’s response to environmental changes. Species occurrence data from citizen science provides unique insights into these transient responses, but require innovative methods for their effective utilization in models. Building models based on ecological first principles could be envisioned through scientific machine learning approaches. These methods allow assembling interpretable data-driven components by fusing domain knowledge and ML.
-This review seeks to highlight the potential of scientific machine learning to improve species distribution models with the aim of providing more reliable forecasts of species range shifts and transient responses to global change. 
-
-\begin{itemize}
-    \item ecological data is increasingly numerous, available and structured thanks with more modalities and sensing technologies, temporal resolution is getting better
-    \item IA suited for interpolation (iid case), but not for extrapolation
-    \item process-based models exist, embed process knowledge by design but difficult to assimilate data, not predictive
-    \item in other domains, researchers have reconciled both worlds : sciML
-    \item this paper aims at reviewing (i) defining sciML for ecologists, (ii) existing sciML methods in other domains, (iii) existing knowledge and models in ecology that could be suitable, and (iv) suggesting new directions for ecological research
-\end{itemize}
-
-\noindent \textbf{Key words.} scientific machine learning, deep species distribution models
+\noindent \textbf{Key words.} Scientific machine learning, deep species distribution models
 
 \noindent \textbf{Potential journals.} Methods in Ecology and Evolution, Ecological informatics, PLOS Computational Biology, Ecology letters, TREE
 
 }
+\end{abstract}
+
+
 
 \section{Introduction}
 
@@ -110,9 +110,9 @@ Penalizing downstream the data-driven model for violating constraints.
 \toprule
 \textbf{Reference} & \textbf{Domain} & \textbf{Method type} & \textbf{Short description} & \textbf{Notes} \\
 \midrule
-\cite{karniadakis2021physics} & Physics & & & &\\
-\citep{beucler2024} & climate modelling & hard constraint & by design ML architectures & knowledge of climate processes & opinion paper \\
-\citep{rackauckas2020} &physics and engineering & hard constraint & & & Seminal paper on ML-based parametrization of ODEs\\
+\cite{karniadakis2021physics} & Physics & & &\\
+\cite{beucler2024} & climate modelling & hard constraint - by design ML architectures & knowledge of climate processes & opinion paper \\
+\cite{rackauckas2020} &physics and engineering & hard constraint & & Seminal paper on ML-based parametrization of ODEs\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -126,15 +126,15 @@ Penalizing downstream the data-driven model for violating constraints.
 \toprule
 \textbf{Reference} & \textbf{Domain} & \textbf{Method type} & \textbf{Short description} & \textbf{Knowledge used} & \textbf{Notes} \\
 \midrule
-\citep{kochkov2024} & Climate modelling (General circulation model) & Hard constraint & combines a differentiable solver for atmospheric dynamics with machine-learning component & Navier-Stokes equations \\
-\citep{bolibar2023} & glaciology & hard constraint & parametrization of ODE model with ML components & mechanistic model of ice flow & \\
-\citep{rasp2018} & climate modelling & hard constraint  & parametrization of ODE model with ML components & simulation of fine scale atmospheric processes & \\
-\citep{Willard2020} & engineering & soft and hard constraints & & review of sciml methods\\
-\citep{Kashinath2021} & weather and climate modelling & & physics informed machine learning & \\
-\citep{Raissi2019} & general physics & soft constraints & physics informed machine learning & seminal paper \\
-\citep{brenner2024} & dynamical system reconstruction \\
-\citep{lagergren2020} & systems biology & soft constraints & physics informed machine learning \\
-\citep{Yazdani2020} & systems biology & soft constraints & physics informed machine learning \\
+\cite{kochkov2024} & Climate modelling (General circulation model) & Hard constraint & combines a differentiable solver for atmospheric dynamics with machine-learning component & Navier-Stokes equations \\
+\cite{bolibar2023} & glaciology & hard constraint & parametrization of ODE model with ML components & mechanistic model of ice flow & \\
+\cite{rasp2018} & climate modelling & hard constraint  & parametrization of ODE model with ML components & simulation of fine scale atmospheric processes & \\
+\cite{Willard2020} & engineering & soft and hard constraints & & review of sciml methods\\
+\cite{Kashinath2021} & weather and climate modelling & & physics informed machine learning & \\
+\cite{Raissi2019} & general physics & soft constraints & physics informed machine learning & seminal paper \\
+\cite{brenner2024} & dynamical system reconstruction \\
+\cite{lagergren2020} & systems biology & soft constraints & physics informed machine learning \\
+\cite{Yazdani2020} & systems biology & soft constraints & physics informed machine learning \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -157,12 +157,12 @@ RangeShiftR & Macroecology & & & & \\
 \cite{dickson2019circuit} & Ecology &  & Methods computing connectivity between patches from e.g. habitat maps & Circuit theory + habitats resistance to species movement &  \\
 \cite{bullock2017synthesis} & "Spread dynamics"? &  & Spatial dispersal kernels fitted empirically for many plant species & Theory and data on plant dispersal &  can inform prior for dispersal components\\
 \cite{chalmandrier2022predictions} & community ecology &  & Learn species niches + function I on data, where $I(traits_sp1,traits_sp2) =$ interspecific competition coefs in dynamic Lotka-Volterra model & Theory (LV model) + species traits &  example of how species traits can constrain competition relationships \\
-\citep{cantrell2004} & general spatial ecology & reaction diffusion models \\
-\citep{barber-omalley2022} & global change biodiversity & & & dispersal, multi-habitat suitability, and population dynamics \\
-\citep{bonneau2016} & invasion ecology & reaction diffusion models & \\
-\citep{cabral2017} & macroecology and biogeography & & & & review of mechanistic models \\
-\citep{briscoe2019} & & & & & opinion paper on using mechanistic models for predictions of species range dynamics \\
-\citep{Scheiter2013} & & & & & opinion paper on next generation of dynamic vegetation models \\
+\cite{cantrell2004} & general spatial ecology & reaction diffusion models \\
+\cite{barber-omalley2022} & global change biodiversity & & & dispersal, multi-habitat suitability, and population dynamics \\
+\cite{bonneau2016} & invasion ecology & reaction diffusion models & \\
+\cite{cabral2017} & macroecology and biogeography & & & & review of mechanistic models \\
+\cite{briscoe2019} & & & & & opinion paper on using mechanistic models for predictions of species range dynamics \\
+\cite{Scheiter2013} & & & & & opinion paper on next generation of dynamic vegetation models \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -174,7 +174,7 @@ RangeShiftR & Macroecology & & & & \\
     \item Phylogeny
     \item Physiological constraint
     \item Food webs / interactions: \cite{poggiato2025integrating}
-    \item Dispersal: \citep{barber-omalley2022}: A hybrid species distribution model combining dispersal, multi-habitat suitability, and population dynamics for diadromous species under climate change scenarios, 
+    \item Dispersal: \cite{barber-omalley2022}: A hybrid species distribution model combining dispersal, multi-habitat suitability, and population dynamics for diadromous species under climate change scenarios, 
     \item Historical contingency
     \item Association between species and environment with GNN: \cite{harrell2025}: 
 \end{itemize}
@@ -194,4 +194,3 @@ RangeShiftR & Macroecology & & & & \\
 
 \section{Conclusion}
 
-\end{abstract}
