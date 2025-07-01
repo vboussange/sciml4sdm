@@ -6,7 +6,18 @@
 Accurate forecasting of biodiversity responses to environmental changes is critical for designing effective conservation strategies, but current state-of-the-art deep learning approaches cannot extrapolate because they do not incorporate fundamental ecological processes. This oversight is problematic because these processes are crucial in determining biodiversity’s response to environmental changes. Species occurrence data from citizen science provides unique insights into these transient responses, but require innovative methods for their effective utilization in models. Building models based on ecological first principles could be envisioned through scientific machine learning approaches. These methods allow assembling interpretable data-driven components by fusing domain knowledge and ML.
 This review seeks to highlight the potential of scientific machine learning to improve species distribution models with the aim of providing more reliable forecasts of species range shifts and transient responses to global change. 
 
+\begin{itemize}
+    \item ecological data is increasingly numerous, available and structured thanks with more modalities and sensing technologies, temporal resolution is getting better
+    \item IA suited for interpolation (iid case), but not for extrapolation
+    \item process-based models exist, embed process knowledge by design but difficult to assimilate data, not predictive
+    \item in other domains, researchers have reconciled both worlds : sciML
+    \item this paper aims at reviewing (i) defining sciML for ecologists, (ii) existing sciML methods in other domains, (iii) existing knowledge and models in ecology that could be suitable, and (iv) suggesting new directions for ecological research
+\end{itemize}
+
 \noindent \textbf{Key words.} scientific machine learning, deep species distribution models
+
+\noindent \textbf{Potential journals.} Methods in Ecology and Evolution, Ecological informatics, PLOS Computational Biology, Ecology letters, TREE
+
 }
 
 \section{Introduction}
@@ -19,32 +30,61 @@ Biodiversity forecasts typically rely on species distribution models (SDMs) that
 
 \noindent\textbf{What are current challenges?}
 \begin{itemize}
-    \item Predicting species interactions
-    \item Predicting species responses to climate change
-    \item Interpretability of deep SDM
+    \item Often only a function of abiotic environmental variables is considered.  
+    \item Deep learning models are bad at extrapolation, such as to new regions or under climate change.
+    \item Interpretability, no way of verifying if the learned functions make biophysical/ecological sense.
+\end{itemize}
+
+\noindent\textbf{How could we move forward?}
+\begin{itemize}
+\item How to deal with the effect of other ecological processes (biotic interactions, dispersal history, evolutionary processes, meta-community dynamics etc.)?
+\item Can we use existing knowledge to constrain a deep SDM in order to improve extrapolation? For instance, species-trait-environment knowledge could be used to build a concept bottleneck~\cite{koh2020concept}. 
+\item Can this encoded knowledge allow assessing the plausibility of the data-driven relations learned by the model?
 \end{itemize}
 
 \noindent\textbf{What is scientific machine learning?}
 Scientific machine learning** (SciML) is an emerging discipline within the data science community.  SciML seeks to address domain-specic data challenges and extract insights from scientific data sets through innovative methodological solutions \cite{rackauckas2020}. SciML draws on tools from both machine learning and scientific computing to develop new methods for scalable, domain-aware, robust, reliable, and interpretable learning and data analysis, and will be critical in driving the next wave of data-driven scientific discovery in the physical and engineering sciences. 
 
 \noindent\textbf{What is the goal of this paper?} 
+\begin{itemize}
+    \item Explore opportunities offered by scientific ML approaches that could help deep SDMs have better extrapolation behaviour by leveraging biophysical/ecological knowledge.
+    \item Explore types of knowledge that is, or could potentially be, available and useful for this.
+    \item Identify use cases that could be used to benchmark extrapolation capacity and interpretability.
+\end{itemize}
 
 \section{Literature review on start-of-the-art species distribution models}
 
 \subsection{Data-driven species distribution models}
 \noindent\textbf{Classical SDMs}
+ establish statistical relationships between species occurrence or abundance and environmental covariates, under the assumption that species–environment relationships are in equilibrium and that key environmental drivers are accurately measured and unbiased. 
+
+Initially developed as environmental envelope models that delineated suitable conditions based on species’ known occurrences, Species distribution models (SDMs) have since evolved into statistically grounded tools that model species–environment relationships using presence, absence, or abundance data. 
+
+Statistically, a species distribution modeling can be treated as a logistic regression or a binary classification problem and implemented via a variety of statistical and machine learning methods \cite{guisan2017habitat}, including: regression based approaches (e.g. Generalized Linear Models (GLM) \cite{nelder1972generalized}, Generalized Additive Models (GAM) \cite{hastie1986generalized}, Multivariate Adaptive Regression
+Splines (MARS) \cite{friedman1991multivariate}), machine learning and classification methods (Support Vector
+Machines (SVM) \cite{hearst1998support}, Artificial Neural Networks (NN) \cite{lecun2015deep}, Classification
+and Regression Trees (CART) \cite{breiman2017classification}, boosting (e.g Boosted Regression Trees (BRT) \cite{elith2008working}) and bagging approaches (e.g Random Forests (RF) \cite{breiman2001random}), Maximum ENTropy \cite{phillips2017opening} in addition to ensemble models \cite{thuiller2009biomod}. 
+
+User-friendly software packages (e.g., biomod2 \cite{thuiller2009biomod}, dismo \cite{hijmans2017package}, ENMtools \cite{warren2010enmtools}) have greatly expanded accessibility of SDMs in ecological research. Furthermore, the community has moved toward increased standardization with the proposal of standardized protocols for model building, evaluation \cite{roberts2017cross,valavi2018blockcv} and reporting \cite{fitzpatrick2021odmap,zurell2020standard}. 
+
+%% maybe add a few words on presence/only questions and incorporating observation processes with occupancy models ??
 
 \noindent\textbf{Joint SDMs}
+Joint Species Distribution Models (JSDMs) \cite{pollock2014understanding} represent an extension of SDMs that allow for the simultaneous modeling of multiple species’ distributions. These models account not only for species–environment relationships but also for residual correlations that may reflect biotic associations.
+
+Recent advances in JSDMs have driven the development of various statistical frameworks and computational tools. Initial implementations were grounded in Generalized Linear Mixed Models (GLMMs) \cite{pollock2014understanding,ovaskainen2020joint,warton2015so}, where fixed effects represent species’ responses to environmental covariates, and random effects capture residual interspecific correlations. The primary methodological differences among JSDMs can be attributed to three main modeling choices \cite{wilkinson2019comparison}: (1) the use of hierarchical structures for regression coefficients, (2) the modeling of residual covariance either directly or through latent variables, and (3) the application of dimension reduction techniques.
+
+In practice, the marginal predictions of JSDMs are often no better than those from single GLMs \cite{poggiato2021interpretations} and are typically outperformed by machine learning methods \cite{norberg2019comprehensive}. However, their main advantage lies in conditional predictions, i-e estimating the presence of one species given others \cite{wilkinson2021defining}. Finally, JSDMs do not directly model species interactions; estimated associations may instead reflect missing environmental variables rather than true biotic interactions \cite{blanchet2020co}.
 
 \noindent\textbf{Deep SDMs}
 
 Recent advances in machine learning, particularly deep learning, have enabled improvements in biodiversity forecasts through the development of deep learning-based SDMs (deep SDMs). These models can leverage large-scale opportunistic datasets, high-resolution satellite imagery, and species interaction data to enhance predictive performance \cite{brun2024, cole2023, Deneu2021, zbinden2024on}. 
-By leveraging citizen science and remote sensing, which provide critical information at fine temporal scales, deep SDMs have also been used to predict ecological community dynamics \cite{gillespie2024,dollinger2024}.
+By leveraging citizen science and remote sensing, which provide critical information at fine temporal scales, deep SDMs have also been used to predict ecological community composition \cite{gillespie2024,dollinger2024,hu2025introduction}.
 % 
-Yet these temporally resolved forecast based on deep SDM still suffer from the same limitations as those from traditional SDMs: they assume species are in equilibrium with their environments, neglecting transient dynamics. The models implicitly treat changes as instantaneous, which overlooks important ecological processes such as population growth, dispersal, and delayed responses to environmental changes \cite{isaac2014, zurell}. This equilibrium assumption fails to capture the time-lagged nature of species range shifts and their transient responses to disturbances \cite{barber-omalley2022}.
+Yet these temporally resolved forecast based on deep SDM still suffer from the same limitations as those from traditional SDMs: they assume species are in equilibrium with their environments, neglecting transient dynamics. The models implicitly treat changes as instantaneous, which overlooks important ecological processes such as population growth, dispersal, and delayed responses to environmental changes \cite{isaac2014, zurell}. This equilibrium assumption fails to capture the time-lagged nature of species range shifts and their transient responses to disturbances \cite{barber-omalley2022}. Furthermore, given the high-dimensional input predictors they can handle and the complex relationships they can capture, deepSDM are even more prone to capturing correlations between species populations and the environment which are not transferable to different contexts (e.g. distant areas, future scenarios).
 
 \subsection{Process-based species distribution models}
-Process-based models, particularly reaction-diffusion models, are dynamical models that explicitly represent demographic processes and dispersal \cite{cantrell2004, bonneau2016}. These models embed strong ecological priors, which theoretically make them more data-efficient and capable of extrapolating beyond observed data \cite{cabral2017, briscoe2019}. However, process-based models are often difficult to calibrate and are entailed with inaccuracies in the representation of dynamical processes, leading to imprecise forecasts in practice \cite{evans2016a, connolly2017, Scheiter2013, boussange2024}.
+Process-based models are models that explicitly represent processes such as demographic processes and dispersal \cite{cantrell2004, bonneau2016}. These models embed strong ecological priors, which theoretically make them more data-efficient and capable of extrapolating beyond observed data \cite{cabral2017, briscoe2019}. However, process-based models are often difficult to calibrate and are entailed with inaccuracies in the representation of dynamical processes, leading to imprecise forecasts in practice \cite{evans2016a, connolly2017, Scheiter2013, boussange2024}.
 
 
 \section{Existing scientific machine learning approaches in related fields}
@@ -53,6 +93,7 @@ Process-based models, particularly reaction-diffusion models, are dynamical mode
 By-design
 \begin{itemize}
     \item Universal differential equations, data-driven parametrization of differential equation-based models
+    \item Using causal DAGs to constraint dependencies between variables for instance via structural equation models \cite{da2024towards}, known ecological interactions \cite{poggiato2025integrating}
 \end{itemize}
 
 \subsection{Soft constraints}
@@ -60,21 +101,85 @@ Penalizing downstream the data-driven model for violating constraints.
 
 "Physics-informed neural networks" (PINNs) are collocation methods relying on a neural network trained to predict an empirical dataset while respecting additional constraints provided by a process-based model \cite{Raissi2019, Kashinath2021,daw2021,bezenac2018}. PINNs and related paradigms, more generally coined "scientific machine learning" \cite{Rackauckas2020}, improve model generalization and data efficiency \cite{Raissi2019, Rackauckas2020}, and have been successfully applied to a variety of system with complex spatio-temporal dynamics, such as climate and weather predictions \cite{Kashinath2021, lam2023, kochkov2024}. PINNs have been extended successfully in the domain of systems biology \cite{lagergren2020, Yazdani2020}, where in contrast to the climate and weather field, process-based models are inaccurate. Despite these successes, scientific machine learning is only starting to be used in the context of biodiversity modeling \cite{boussange2024}. 
 
+\begin{table}[htbp]
+\centering
+\caption{Meta-reviews of SciML related methods.}
+
+\small
+\begin{tabular}{@{}p{2cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{2cm}@{}}
+\toprule
+\textbf{Reference} & \textbf{Domain} & \textbf{Method type} & \textbf{Short description} & \textbf{Notes} \\
+\midrule
+\cite{karniadakis2021physics} & Physics & & & &\\
+\citep{beucler2024} & climate modelling & hard constraint & by design ML architectures & knowledge of climate processes & opinion paper \\
+\citep{rackauckas2020} &physics and engineering & hard constraint & & & Seminal paper on ML-based parametrization of ODEs\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[htbp]
+\centering
+\caption{Review-case-study of SciML methods in other domains}
+\small
+\begin{tabular}{@{}p{2cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}@{}}
+\toprule
+\textbf{Reference} & \textbf{Domain} & \textbf{Method type} & \textbf{Short description} & \textbf{Knowledge used} & \textbf{Notes} \\
+\midrule
+\citep{kochkov2024} & Climate modelling (General circulation model) & Hard constraint & combines a differentiable solver for atmospheric dynamics with machine-learning component & Navier-Stokes equations \\
+\citep{bolibar2023} & glaciology & hard constraint & parametrization of ODE model with ML components & mechanistic model of ice flow & \\
+\citep{rasp2018} & climate modelling & hard constraint  & parametrization of ODE model with ML components & simulation of fine scale atmospheric processes & \\
+\citep{Willard2020} & engineering & soft and hard constraints & & review of sciml methods\\
+\citep{Kashinath2021} & weather and climate modelling & & physics informed machine learning & \\
+\citep{Raissi2019} & general physics & soft constraints & physics informed machine learning & seminal paper \\
+\citep{brenner2024} & dynamical system reconstruction \\
+\citep{lagergren2020} & systems biology & soft constraints & physics informed machine learning \\
+\citep{Yazdani2020} & systems biology & soft constraints & physics informed machine learning \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
 
 \section{Opportunities for scientific machine learning in species distribution modelling}
 
 
+\begin{table}[htbp]
+\centering
+\caption{Review of data-driven process-based models that could serve as inductive bias for a SciML approach in species distribution modelling.}
+\small
+\begin{tabular}{@{}p{2cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}@{}}
+\toprule
+\textbf{Reference} & \textbf{Domain} & \textbf{Method type} & \textbf{Short description} & \textbf{Knowledge used} & \textbf{Notes} \\
+\midrule
+FATE-HD? &  & & & & \\
+RangeShiftR & Macroecology & & & & \\
+\cite{dickson2019circuit} & Ecology &  & Methods computing connectivity between patches from e.g. habitat maps & Circuit theory + habitats resistance to species movement &  \\
+\cite{bullock2017synthesis} & "Spread dynamics"? &  & Spatial dispersal kernels fitted empirically for many plant species & Theory and data on plant dispersal &  can inform prior for dispersal components\\
+\cite{chalmandrier2022predictions} & community ecology &  & Learn species niches + function I on data, where $I(traits_sp1,traits_sp2) =$ interspecific competition coefs in dynamic Lotka-Volterra model & Theory (LV model) + species traits &  example of how species traits can constrain competition relationships \\
+\citep{cantrell2004} & general spatial ecology & reaction diffusion models \\
+\citep{barber-omalley2022} & global change biodiversity & & & dispersal, multi-habitat suitability, and population dynamics \\
+\citep{bonneau2016} & invasion ecology & reaction diffusion models & \\
+\citep{cabral2017} & macroecology and biogeography & & & & review of mechanistic models \\
+\citep{briscoe2019} & & & & & opinion paper on using mechanistic models for predictions of species range dynamics \\
+\citep{Scheiter2013} & & & & & opinion paper on next generation of dynamic vegetation models \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
 \noindent\textbf{Existing knowledge}
 \begin{itemize}
-    \item Traits
+    \item Traits: using traits to infer interactions (trait-matching \cite{pichler2020machine}), using traits to constrain species-environmental relationships \cite{pollock2012role}, using traits to parameterize species interactions, dispersal and growth rates in process-based SDMs \cite{chalmandrier2022predictions}, using community-level traits to constrain SDM predictions (Deschamps et al, in revision).  
     \item Phylogeny
     \item Physiological constraint
-    \item Food webs / interactions
-    \item Dispersal
+    \item Food webs / interactions: \cite{poggiato2025integrating}
+    \item Dispersal: \citep{barber-omalley2022}: A hybrid species distribution model combining dispersal, multi-habitat suitability, and population dynamics for diadromous species under climate change scenarios, 
     \item Historical contingency
+    \item Association between species and environment with GNN: \cite{harrell2025}: 
 \end{itemize}
 
-\noindent\textbf{Retrieval augmented generation.} LLMs + check by experts
+\noindent\textbf{Retrieval augmented generation.} LLMs + check by experts (human in the loop ?)
 
 
 \section{Robust evaluation under distribution shifts}
@@ -83,6 +188,7 @@ Penalizing downstream the data-driven model for violating constraints.
     \item With synthetic data
     \item Space for time data
     \item Invasive species
+    \item Use paleo-ecological data
 \end{itemize}
 
 
