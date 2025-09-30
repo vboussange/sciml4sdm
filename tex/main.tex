@@ -1,27 +1,191 @@
 \begin{abstract}
 {\footnotesize
-Ecological data is increasingly abundant and of improved spatial and temporal resolution, thanks to advances in sensing technologies and data collection methods. While current state-of-the-art deep learning approaches can leverage this data to estimate species distributions, they suffer from poor extrapolation capabilities to novel environmental conditions. This limitation is problematic because accurate biodiversity forecasts under environmental change are essential for effective conservation planning. 
+Advances in remote sensing technologies, data collection methods and data sharing platforms have led to an unprecedented increase in the abundance, availability and spatio-temporal resolution of ecological data over the past decade. This wealth of data has significantly benefited data-driven machine learning approaches, including deep learning, which can efficiently leverage these data to estimate current species distributions. However, deep learning models often struggle to extrapolate to future projections and novel conditions, limiting their relevance for forecasting future biodiversity changes under global changes.
 % 
-Alternative process-based models, which incorporate ecological mechanisms by design, theoretically offer better extrapolation potential but struggle with data assimilation and often yield imprecise predictions in practice. 
+Alternatively, process-based models, which incorporate by-design constraints representing scientifically established knowledge on ecological mechanisms, are often thought to offer a better extrapolation potential. Yet, they are difficult to calibrate using data on species observations and heterogeneous sensors, meaning that they fail to capitalize on the recent increase of available data and often yield imprecise predictions in practice. 
 % 
-Scientific machine learning (SciML) approaches, which integrate domain knowledge with machine learning methods, present a promising pathway to bridge this gap between data-driven and process-based modeling paradigms.
+Scientific machine learning (SciML) approaches, which seek to integrate domain knowledge with machine learning methods, present a promising pathway to bridge this gap between data-driven and process-based modeling paradigms in ecology.
 % 
-This review examines the potential of scientific machine learning to enhance biodiversity forecasting under global change. We (i) propose a working definition of SciML in the ecological context, (ii) survey existing SciML methodologies from related scientific domains, (iii) identify ecological knowledge and modeling frameworks suitable for SciML implementation, and (iv) outline future research directions for the field.
+This review examines the potential of SciML to improve biodiversity forecasting under global change. We (i) review objectives and unsolved challenges of forecasting species distributions; (ii) synthesize the strengths and limits of existing process-based and data-driven modeling approaches, (iii) identify invariant properties of ecological systems used in process-based modeling to guide the design of future SciML SDMs, acknowledging the process knowledge gaps that could be filled from data, and (iv) what machine learning can contribute to SciML SDM in terms of flexibility, scalability and data assimilation. Building on this comparison, we highlight differentiable programming as a fundamental principle enabling hybrid SciML models that integrate mechanistic processes with flexible learning architectures. We then survey existing efforts in hybrid ecological modeling, drawing connections to parallel advances in other scientific fields. Finally, we outline future directions for SciML in ecological forecasting.
 % 
 Our goal is to stimulate the development of more robust and interpretable species distribution models that can better support conservation decision-making in an era of rapid environmental change.
 \vspace{1cm}
 
-\noindent \textbf{Key words.} Scientific machine learning, deep species distribution models
+\noindent \textbf{Key words.} Scientific machine learning, hybrid models, deep species distribution models, predictive ecology
 
-\noindent \textbf{Potential journals.} Methods in Ecology and Evolution, Ecological informatics, PLOS Computational Biology, Ecology letters, TREE
-
+\noindent \textbf{Potential journals.} Methods in Ecology and Evolution, Ecological informatics, PLOS Computational Biology, Ecology letters, TREE, Nature Methods, Science Advances
 }
 \end{abstract}
 
 
+\section{Squeleton}
+
+\subsection{Objectives and challenges in forecasting biodiv in space and time} % Sara
+
+Broad objectives of biodiversity models
+- Learn eco-evolutionary processes governing species distributions (improving ecological knowledge):
+\begin{itemize}
+    \item Attribution to environmental processes: climate, land use, etc.
+    \item Quantify the contribution of different ecological processes: trait-environment and/or phylogenetic effects, biotic interactions, dispersal/connectivity processes
+\end{itemize}
+
+- Improve species distribution  estimation (dealing with data challenges):
+\begin{itemize}
+    \item Integrate multi-source data: presence-only, presence absence, abundance
+    \item Upscaling biodiversity data / downscaling environmental drivers
+\end{itemize}
+
+- Forecast species distributions under new conditions (in space and time):
+\begin{itemize}
+    \item Near-term forecasts
+    \item Long-term projections
+    \item Predict range shifts and colonization/extinction
+\end{itemize}
+
+- Support biodiversity monitoring, conservation adn restoration:
+\begin{itemize}
+    \item Inform sampling, guide efficient monitoring 
+    \item Detect changes and turnover in assemblages and attribute to drivers    
+    \item Identify early-warning signals and tipping points 
+    \item Simulate biodiversity under different management scenarios (counterfactual simulations)
+    \item Enable optimization of conservation strategies (models that integrate seamlessly)    
+\end{itemize}
+
+What current limits towards building more reliable, interpretable and usable predictions of biodiversity in space and time? Including future projections, but not only 
+- Equilibrium hypotheses assumed by these models are not satisfied \\
+- Biases and weakly labeled data \\
+- Scale mismatch between data and processes  \\
+- Lack of consideration of transient dynamics: seasonal and intra-annual processes are ignored by statistical models which can lead to erroneous future predictions that ignore transient dynamics  \\
+- Lack of integration of dispersal and spatial connectivity: mostly done separately using IBMs or simplified with kernels 
+- Overlooking biotic interactions and overall community context  \\
+- Overconfident or misleading predictions due to unaccounted for sampling / model structure errors  \\
+- Inadequacy for near-term forecasting, early warning signaling and tipping point detection  \\
+- Difficulties to quantify uncertainty at all levels (about inputs like climate, ecological model, data, etc)  \\
+
+Some points
+- Difficulties to scale spatially, taxonomically
+- Difficulties to attribute predictions to ecological processes coherently with scientific knowledge
+- Integrating traits to pull predictive strength across taxa (e.g. Fate or Chalmandrier) -> predictive ability currently limited  (This is more a solution than an objective / challenge )
+
+
+\subsection{Strength and advantages of process-based vs data driven models} % Diego
+
+Machine learning models, and particularly those based on deep learning, are known to perform well on data that follow the same distribution seen during training, but to break down under distribution shifts, with the different failure models being still under research~\cite{nagarajan2020understanding}.
+Despite this, it has also been shown that methodological developments that provide an improved in-distribution performance also tend to result in better out-of-distribution (OOD) capabilities~\cite{miller2021accuracy}, although the gap between both performances tends to widen as performance increases. 
+This suggests that state-of-the-art deep learning approaches should not be discarded when seeking better OOD performance, though an increasing effort may be required to close the OOD gap.
+Even on the in-distribution setting, deep learning-based SDMs tend to outperform traditional data-driven approaches, such as Random Forests, only when using complex and structured input variables, such as remote sensing images~\cite{deneu2021convolutional}, rather than rasters of environmental variables~\cite{kellenberger2024performance}.
+In classical data-driven SDM models, it has been observed that higher model complexity tends to result in worse extrapolation under climate change projections~\cite{brun2020model}.
+Despite this, data-driven models are often used to obtain future projections of species distributions~\cite{brun2016predictive,harris2018forecasting,brodie2022recommendations,barnes2022climate}.
+
+%-Purely data driven models: predict well observed data, but unable to disentangle underlying ecological processes (or sampling biases ;-)) -> fail in extrapolation. 
+%Yet, Currently many studies doing future projections with broad taxonomic spectrum are purely data-driven (e.g. static sdm), easier but unreliable "out-of-sample" e.g. for future projections
+
+Process-based SDMs, those that explicitly include physical and biological processes in their computation, are favored over data-driven SDMs due to their better behavior under extrapolation~\cite{urban2016improving,briscoe2019forecasting}.
+However, the data required to calibrate their parameters is much less readily available that the data used by correlative, data-driven, models: it turns out to be easier to scale the number of species occurrences needed to fit a data-driven model than to explicitly measure the parameters describing a biological process~\cite{urban2016improving}.
+%-Purely process-based models (to define, incorporte scientific knowledge by-design constraining predictions?) appealing for more reliable extrapolation (e.g. some already used like dynamic vegetation models, physiological / phenological models of survival cf PHENOFIT, matrix population models, reaction diffusion models, etc) 
+%Assumed to be more robust for future projection, see e.g. https://www.science.org/doi/10.1126/science.aad8466
+%Also, provide interpretation for predictions making scientific sense
+
+%Ideally, one calibrates each parameter based on specific data, BUT Impossible to scale to multi/many taxa (Often calibrated based on blurry / subjective expert knowledge) 
+
+%Is Hybrid / inverse calibration of process-based models on observation a solution?
+[Move this to later on. Here focus on on the two paradigm] 
+A potential way forward is to use SciML approaches in order to calibrate parameters using the same scalable observations used by classical ML methods.
+By using differentiable programming, it becomes possible to learn a set of parameters in a process-based or hybrid model that lead to predictions that match the observations~\cite{karniadakis2021physics,shen2023differentiable}.
+
+- Rigid and wrong specification of model components lead to irrealistic parameter values when calibrated on observation data 
+- Algorithms for inverse calibration (e.g. often Bayesian algorithms) come with much convergence problems 
+- To avoid it, process complexity sacrified -> predictions biased 
+
+\subsection{What can process-based model bring? process modeling and knowledge gap} % Christophe
+Data driven approaches can potentially learn arbitrary relationships from the data. Yet, this can lead to unrealistic artifacts which can be revealed under extrapolation conditions.
+
+Ecological processes knowledge enable to set some universal prior constraints on these relationships, which both act as a form of regularization (enabling to learn more robust models from less data) and a guarantee that predictions will remain credible outside of the observed data range.
+
+We'll now (i) summarize invariant properties of ecological systems that have been embedded within existing process-based models to guide the design of scientific ML SDMs, (ii) point out the limits of process-based models currently used in ecology, (iiii) highlight gaps in process knowledge that could potentially be learnt from data. 
+
+\paragraph{Invariant ecological properties in process-based models.} 
+
+From niche theory, (i) limited species tolerances to abiotic conditions (Grinnell) + niche conservatism in time -> a species can only persist in a restricted range of physical conditions and this is invariant on reasonable time scales (say <10K years), (ii) limited tolerances to biotic conditions-> presence or absence of other species delimit a biotic sub-space where a species can persist, i.e. the Eltonian niche, (iii) a species is limited by its dispersal capabilities which are also constant in time, even though spread rates themselves will depend on local dispersal pathways. Dispersal crucial to explain persistence in presence of source-think dynamics, such as described by meta population dynamics (fragmented patches) or range dynamics (continuous suitable space). 
+
+Ecological process invariance across species is often mediated by their traits (life-history, functional traits) which as they may explain how a species interact with others, reproduce in time, and move.
+
+For instance, spatial dispersal is mediated by spatial connectivity which depends on landscape + environmental conditions but also on species traits. This dependence is often invariant across large groups of species (e.g. all plant species whose seeds are spread by wind).
+
+Traits also important to determine how biotic conditions affect a species persistence, hence used to model interspecific interactions (e.g. \cite{chalmandrier2022predictions}).
+
+Process based models are most often hypothesing Markovian transitions
+
+Impact of disturbances natural (e.g. fires, flooding) or anthropogenic (e.g., agriculture, pollution, land use change) 
+
+-> non-equilibrium / transient dynamics
+
+Knowledge about variability also matters. For instance, we know that small and isolated populations are sensitive to demographic stochasticity and genetic drift <-> collapse or speciation (neutral theory) making these regimes less predictible. Fitting process-based models requires to account for how variance of demographic and spread rates scales in response to population size, life-stages or environmental gradient, otherwise we would, e.g. wrongly assume too much information on the growth rate value in the data of small population. 
+
+\paragraph{Limits of process-based models used in ecology.} 
+
+Due to the peculiarity and sensitivity of the cost functions to optimize (XXX), classic sampling (e.g. MCMC) or gradient descent algorithms often fail or require very specific tuning of their hyper-parameters to converge.
+
+This is sometimes due to the lack of identifiability of the model parameters, a problem also called parameter-redundancy (\cite{cole2020parameter}), meaning the existence of distinct sets of parameters with equally explanatory power even with infinite data, and leading to ridges in the optimal surface of the optimized cost functions (e.g., negative log-likelihood). 
+
+This can be also partly due to the rigidity of the functional relationships set a priori based on somehow arbitrary rules (XXX). 
+
+As a consequence, methods to calibrate process-based models (aka inverse modeling) are often specific, like differential evolution MCMC algorithms or particle filters / sequential Monte-Carlo algorithms typically promoted for state-space models.
+
+Even though such specific methods have been developped they  
+
+Inability to deal with complexity -> Process-based models designed with limited number of components rigid functional components to minimize their 
+
+Algorithms commonly used to calibrate , both Bayesian or based on minizing an observed 
+
+\paragraph{Gaps in process knowledge}
+
+Just some examples.
+
+The functional form of growth rate, e.g. Ricker vs Beverton Holt vs Hassell etc, its dependence on the environment, on the presence of other species, on the existence of allee-effect, is highly context-dependent on the biology and ecology of the taxon, and thus context-dependent. -> Would be relevant to learn it from data
+
+How traits mediate responses of dispersal, in particular long distance, and the effect of biotic interactions of growth is a big unknown (to me).
+
+
+\subsection{What ML can bring?} % Victor
+
+\subsubsection{Improving process-based model expressive power.}
+\cite{wood2001}: ML to avoid irrelevant incidental assumptions on exact functional forms.
+
+\subsubsection{Interface with different data sources}
+
+\paragraph{Integrating multimodal data sources (encoder).}
+\begin{itemize}
+    \item within a multispecies context
+    \begin{itemize}
+        \item Leveraging trait data: using traits to infer interactions (trait-matching \cite{pichler2020machine}), using traits to constrain species-environmental relationships \cite{pollock2012role}, using traits to parameterize species interactions, dispersal and growth rates in process-based SDMs \cite{chalmandrier2022predictions}, using community-level traits to constrain SDM predictions (Deschamps et al, in revision).  
+        \item Leveraging phylogenetic relationships
+    \end{itemize}
+    \item automatic feature extraction from structured data (computer vision) to parametrize certain processes
+    \item Use of geo embedding for predictions (AlphaEarth)
+\end{itemize}
+
+\paragraph{Integrating multimodal data sources (for calibration, decoder)}
+\begin{itemize}
+    \item Formulation of loss functions integrating different datasources \cite{Schneider2017}
+    \begin{itemize}
+        \item citizen science data \cite{brun2024, gillespie2024}
+        \item environmental DNA \cite{Ruppert2019}
+        \item process-based predictions matched against e.g. satellite imagery with an encoder-decoder, 
+        \item integration of bioaccoustics \cite{Aide2013}
+    \end{itemize}
+    
+\end{itemize}
+
+\subsection{A review of hybrid modelling approaches}
+
+\subsection{Methods}
+
+
+
+% LEGACY
 
 \section{Introduction}
-
 \noindent\textbf{Motivation.}
 The current biodiversity crisis poses significant threats to humanity by negatively impacting ecosystem services \cite{Barnosky2011,ipbes2019}. Climate change and habitat degradations are major drivers of biodiversity loss, influencing species abundance, community composition, and spatial distribution \cite{ipbes2019, pereira2010}. Some species adapt to climate change by shifting their geographic range to track suitable environmental conditions \cite{bellard2012} when sufficient habitat connectivity supports colonization and survival \cite{hodgson2016}. However, anthropogenic pressures and land-use changes often result in habitat fragmentation, impeding species' ability to track environmental shifts effectively \cite{mcguire2016}. Realistic biodiversity forecasts are essential for guiding conservation actions that promote ecosystem resilience \cite{urban2015}. 
 
@@ -101,71 +265,10 @@ Penalizing downstream the data-driven model for violating constraints.
 
 "Physics-informed neural networks" (PINNs) are collocation methods relying on a neural network trained to predict an empirical dataset while respecting additional constraints provided by a process-based model \cite{Raissi2019, Kashinath2021,daw2021,bezenac2018}. PINNs and related paradigms, more generally coined "scientific machine learning" \cite{Rackauckas2020}, improve model generalization and data efficiency \cite{Raissi2019, Rackauckas2020}, and have been successfully applied to a variety of system with complex spatio-temporal dynamics, such as climate and weather predictions \cite{Kashinath2021, lam2023, kochkov2024}. PINNs have been extended successfully in the domain of systems biology \cite{lagergren2020, Yazdani2020}, where in contrast to the climate and weather field, process-based models are inaccurate. Despite these successes, scientific machine learning is only starting to be used in the context of biodiversity modeling \cite{boussange2024}. 
 
-\begin{table}[htbp]
-\centering
-\caption{Meta-reviews of SciML related methods.}
-
-\small
-\begin{tabular}{@{}p{2cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{2cm}@{}}
-\toprule
-\textbf{Reference} & \textbf{Domain} & \textbf{Method type} & \textbf{Short description} & \textbf{Notes} \\
-\midrule
-\cite{karniadakis2021physics} & Physics & & &\\
-\cite{beucler2024} & climate modelling & hard constraint - by design ML architectures & knowledge of climate processes & opinion paper \\
-\cite{rackauckas2020} &physics and engineering & hard constraint & & Seminal paper on ML-based parametrization of ODEs\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
-\begin{table}[htbp]
-\centering
-\caption{Review-case-study of SciML methods in other domains}
-\small
-\begin{tabular}{@{}p{2cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}@{}}
-\toprule
-\textbf{Reference} & \textbf{Domain} & \textbf{Method type} & \textbf{Short description} & \textbf{Knowledge used} & \textbf{Notes} \\
-\midrule
-\cite{kochkov2024} & Climate modelling (General circulation model) & Hard constraint & combines a differentiable solver for atmospheric dynamics with machine-learning component & Navier-Stokes equations \\
-\cite{bolibar2023} & glaciology & hard constraint & parametrization of ODE model with ML components & mechanistic model of ice flow & \\
-\cite{rasp2018} & climate modelling & hard constraint  & parametrization of ODE model with ML components & simulation of fine scale atmospheric processes & \\
-\cite{Willard2020} & engineering & soft and hard constraints & & review of sciml methods\\
-\cite{Kashinath2021} & weather and climate modelling & & physics informed machine learning & \\
-\cite{Raissi2019} & general physics & soft constraints & physics informed machine learning & seminal paper \\
-\cite{brenner2024} & dynamical system reconstruction \\
-\cite{lagergren2020} & systems biology & soft constraints & physics informed machine learning \\
-\cite{Yazdani2020} & systems biology & soft constraints & physics informed machine learning \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 
 
 \section{Opportunities for scientific machine learning in species distribution modelling}
 
-
-\begin{table}[htbp]
-\centering
-\caption{Review of data-driven process-based models that could serve as inductive bias for a SciML approach in species distribution modelling.}
-\small
-\begin{tabular}{@{}p{2cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{2cm}@{}}
-\toprule
-\textbf{Reference} & \textbf{Domain} & \textbf{Method type} & \textbf{Short description} & \textbf{Knowledge used} & \textbf{Notes} \\
-\midrule
-FATE-HD? &  & & & & \\
-RangeShiftR & Macroecology & & & & \\
-\cite{dickson2019circuit} & Ecology &  & Methods computing connectivity between patches from e.g. habitat maps & Circuit theory + habitats resistance to species movement &  \\
-\cite{bullock2017synthesis} & "Spread dynamics"? &  & Spatial dispersal kernels fitted empirically for many plant species & Theory and data on plant dispersal &  can inform prior for dispersal components\\
-\cite{chalmandrier2022predictions} & community ecology &  & Learn species niches + function I on data, where $I(traits_sp1,traits_sp2) =$ interspecific competition coefs in dynamic Lotka-Volterra model & Theory (LV model) + species traits &  example of how species traits can constrain competition relationships \\
-\cite{cantrell2004} & general spatial ecology & reaction diffusion models \\
-\cite{barber-omalley2022} & global change biodiversity & & & dispersal, multi-habitat suitability, and population dynamics \\
-\cite{bonneau2016} & invasion ecology & reaction diffusion models & \\
-\cite{cabral2017} & macroecology and biogeography & & & & review of mechanistic models \\
-\cite{briscoe2019} & & & & & opinion paper on using mechanistic models for predictions of species range dynamics \\
-\cite{Scheiter2013} & & & & & opinion paper on next generation of dynamic vegetation models \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 
 \noindent\textbf{Existing knowledge}
